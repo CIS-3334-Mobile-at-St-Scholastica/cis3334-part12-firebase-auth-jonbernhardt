@@ -11,11 +11,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-//import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -88,11 +88,18 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
-    }
-
-    private void updateUI(FirebaseUser currentUser) {
-
+        //updateUI(currentUser);
+        if (currentUser != null) {
+            // User is signed in
+            Log.d("CIS3334", "onAuthStateChanged:signed_in:" + currentUser.getUid());
+            Toast.makeText(MainActivity.this, "User Signed In", Toast.LENGTH_LONG).show();
+            textViewStatus.setText("Signed In");
+        } else {
+            // User is signed out
+            Log.d("CIS3334", "onAuthStateChanged:signed_out");
+            Toast.makeText(MainActivity.this, "User Signed Out", Toast.LENGTH_LONG).show();
+            textViewStatus.setText("Signed Out");
+        }
     }
 
     private void createAccount(String email, String password) {
@@ -102,15 +109,15 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "createUserWithEmail:success");
+                            Log.d("CIS3334", "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
+                            textViewStatus.setText("Signed In");
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(EmailPasswordActivity.this, "Authentication failed.",
+                            Log.w("CIS3334", "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(MainActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+                            textViewStatus.setText("Signed Out");
                         }
 
                         // ...
@@ -125,15 +132,15 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
+                            Log.d("CIS3334", "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(user);
+                            textViewStatus.setText("Signed In");
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(EmailPasswordActivity.this, "Authentication failed.",
+                            Log.w("CIS3334", "signInWithEmail:failure", task.getException());
+                            Toast.makeText(MainActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            updateUI(null);
+                            textViewStatus.setText("Signed Out");
                         }
 
                         // ...
@@ -142,7 +149,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void signOut () {
-
+        mAuth.signOut();
+        textViewStatus.setText("Signed Out");
     }
 
     private void googleSignIn() {
