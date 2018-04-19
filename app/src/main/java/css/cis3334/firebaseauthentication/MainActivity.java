@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mAuth = FirebaseAuth.getInstance();
-
     }
 
     @Override
@@ -120,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
                             textViewStatus.setText("Signed Out");
                         }
 
-                        // ...
                     }
                 });
     }
